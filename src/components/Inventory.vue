@@ -1,0 +1,38 @@
+<template>
+  <v-list>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>卡片名稱</v-list-item-title>
+      </v-list-item-content>
+      <v-list-item-content>
+        <v-list-item-title>庫存張數</v-list-item-title>
+      </v-list-item-content>
+      <v-list-item-content>
+        <v-list-item-title>全部金額</v-list-item-title>
+      </v-list-item-content>
+      <v-list-item-content>
+        <v-list-item-title>單張成本</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <div>
+      <v-list-item
+        v-for="(item, index) of 20"
+        :key="index"
+        style="border-bottom: 1px solid rgba(0, 0, 0, 0.12)"
+      >
+        <v-list-item-content>
+          123
+        </v-list-item-content>
+        <v-list-item-content>
+          123
+        </v-list-item-content>
+        <v-list-item-content>
+          123
+        </v-list-item-content>
+        <v-list-item-content>
+          123
+        </v-list-item-content>
+      </v-list-item>
+    </div>
+  </v-list>
+</template>
