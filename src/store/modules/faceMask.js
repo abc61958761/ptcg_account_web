@@ -1,10 +1,6 @@
-import Vue from "vue";
 import axios from "axios";
-import Vuex from "vuex";
 
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
+const faceMask = {
     state: {
       count: 0,
       faceMasks: []
@@ -31,6 +27,6 @@ const store = new Vuex.Store({
         return state.faceMasks;
       }
     }
-  });
+  };
 
-  export default store;
+  export default faceMask;

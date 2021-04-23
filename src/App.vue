@@ -1,54 +1,65 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+    <v-app-bar app color="primary" dark>
+      <h2 class="d-flex align-center">
+        記帳系統
+      </h2>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+      <v-btn class="mr-2" text to="/purchase-record">
+        購入紀錄
+      </v-btn>
+      <v-btn class="mr-2" text to="/inventory"> 庫存 </v-btn>
+      <v-btn class="mr-2" text to="/sold-record">
+        賣出紀錄
+      </v-btn>
+      <v-btn text to="/settlement-recrod">
+        結算紀錄
       </v-btn>
     </v-app-bar>
 
-    <v-main>
-      <router-view />
+    <v-main
+      class="d-flex flex-column"
+      style="height: 100vh;
+        overflow: hidden;"
+    >
+      <v-container
+        d-flex
+        flex-column
+        style="height: 100%;
+        overflow: hidden;"
+      >
+        <router-view />
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-
-export default {
-  name: 'App',
-  data: () => ({
-    //
-  }),
-};
+  export default {
+    name: "App",
+    data: () => ({
+      //
+    }),
+  };
 </script>
+<style lang="scss">
+  .v-main .v-main__wrap {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .v-data-table > .v-data-table__wrapper {
+    display: flex !important;
+    flex: 1 !important;
+    overflow: auto;
+    tbody {
+      tr.v-data-table__expanded__content {
+        box-shadow: 0 0 !important;
+        background: rgba(0, 0, 0, 0.1) !important;
+        font-size: 14px !important;
+      }
+    }
+  }
+</style>

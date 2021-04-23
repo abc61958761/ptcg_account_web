@@ -6,9 +6,10 @@
   >
     <v-card style="display: flex; flex-direction: column; height: 100%">
       <v-card-title class="headline grey lighten-2">
-        賣出商品登陸
+        購買商品登錄
       </v-card-title>
 
+      <!-- <v-container> -->
       <v-card-text
         style="flex: 1;
           display: flex;
@@ -19,7 +20,7 @@
       >
         <div style="display: flex; align-items: center" class="mb-2">
           <v-text-field
-            v-model="newSoldItems.sold.name"
+            v-model="newPurchaseItems.purchase.name"
             dense
             outlined
             hide-details
@@ -27,41 +28,36 @@
             class="mr-4"
           ></v-text-field>
           <v-select
-            v-model="newSoldItems.sold.sales_channel"
+            v-model="newPurchaseItems.purchase.purchaser"
             hide-details
             dense
             outlined
-            label="賣出通路"
+            label="購買人"
             class="mr-4"
-            :items="salesChannelItems"
-          ></v-select>
-          <v-select
-            v-model="newSoldItems.sold.payee"
-            hide-details
-            dense
-            outlined
-            label="收款人"
-            class="mr-4"
-            :items="payeeItems"
+            :items="purchaserItems"
           ></v-select>
           <v-menu
             ref="menu"
             v-model="menu"
             :close-on-content-click="false"
-            :return-value.sync="newSoldItems.sold.date"
+            :return-value.sync="newPurchaseItems.purchase.date"
             transition="scale-transition"
             offset-y
             min-width="auto"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="newSoldItems.sold.date"
+                v-model="newPurchaseItems.purchase.date"
                 readonly
                 v-bind="attrs"
                 v-on="on"
               ></v-text-field>
             </template>
-            <v-date-picker v-model="newSoldItems.sold.date" no-title scrollable>
+            <v-date-picker
+              v-model="newPurchaseItems.purchase.date"
+              no-title
+              scrollable
+            >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="menu = false">
                 Cancel
@@ -69,7 +65,7 @@
               <v-btn
                 text
                 color="primary"
-                @click="$refs.menu.save(newSoldItems.sold.date)"
+                @click="$refs.menu.save(newPurchaseItems.purchase.date)"
               >
                 OK
               </v-btn>
@@ -97,14 +93,14 @@
               <v-list-item-title>小計</v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn icon @click="addSoldItemAction">
+              <v-btn icon @click="addPurchaseItemAction">
                 <v-icon color="grey lighten-1">mdi-plus</v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
           <div style="overflow: auto; height: 100%">
             <v-list-item
-              v-for="(item, index) of newSoldItems.soldRecords"
+              v-for="(item, index) of newPurchaseItems.purchaseRecords"
               :key="index"
             >
               <v-list-item-content class="pr-2">
@@ -139,8 +135,8 @@
               <v-list-item-action>
                 <v-btn
                   icon
-                  :disabled="newSoldItems.soldRecords.length < 2"
                   @click="removeItem(index)"
+                  :disabled="newPurchaseItems.purchaseRecords.length < 2"
                 >
                   <v-icon color="grey lighten-1">mdi-close</v-icon>
                 </v-btn>
@@ -171,6 +167,7 @@
           登錄
         </v-btn>
       </v-card-actions>
+      <!-- </v-container> -->
     </v-card>
   </v-dialog>
 </template>
@@ -181,15 +178,15 @@
     props: ["openDialog"],
     data: () => {
       return {
+        date: new Date().toISOString().substr(0, 10),
         menu: false,
-        newSoldItems: {
-          sold: {
+        newPurchaseItems: {
+          purchase: {
             name: "",
-            payee: "",
-            sales_channel: "",
+            purchaser: "",
             date: new Date().toISOString().substr(0, 10),
           },
-          soldRecords: [
+          purchaseRecords: [
             {
               pokemon_id: "",
               price: 0,
@@ -197,8 +194,7 @@
             },
           ],
         },
-        payeeItems: ["Carol", "Chad"],
-        salesChannelItems: ["轉交", "蝦皮"],
+        purchaserItems: ["Carol", "Chad"],
       };
     },
     computed: {
@@ -210,7 +206,7 @@
           price: 0,
           count: 0,
         };
-        for (const item of this.newSoldItems.soldRecords) {
+        for (const item of this.newPurchaseItems.purchaseRecords) {
           result.price += item.price * item.count;
           result.count += parseInt(item.count);
         }
@@ -222,39 +218,36 @@
         this.$emit("closeDialog");
         this.clearData();
       },
-      addSoldItemAction() {
-        this.newSoldItems.soldRecords.push({
+      addPurchaseItemAction() {
+        this.newPurchaseItems.purchaseRecords.push({
           pokemon_id: "",
           price: 0,
           count: 0,
         });
       },
       async submitAction() {
-        if (!this.newSoldItems.sold.name) return;
-        if (!this.newSoldItems.sold.payee) return;
+        if (!this.newPurchaseItems.purchase.name) return;
+        if (!this.newPurchaseItems.purchase.purchaser) return;
 
-        for (const item of this.newSoldItems.soldRecords) {
+        for (const item of this.newPurchaseItems.purchaseRecords) {
           if (item.count <= 0) return;
           if (!item.pokemon_id) return;
         }
 
-        await this.$store.dispatch("createSoldRecord", this.newSoldItems);
+        await this.$store.dispatch(
+          "createPurchaseRecord",
+          this.newPurchaseItems
+        );
 
         this.closeDialogAction();
       },
       clearData() {
-        this.newSoldItems.sold = {
-          name: "",
-          payee: "",
-          sales_channel: "",
-          date: new Date().toISOString().substr(0, 10),
-        };
-        this.newSoldItems.soldRecords = [
+        this.newPurchaseItems.purchaseRecords = [
           { pokemon_id: "", price: 0, count: 0 },
         ];
       },
       removeItem(index) {
-        this.newSoldItems.soldRecords.splice(index, 1);
+        this.newPurchaseItems.purchaseRecords.splice(index, 1);
       },
     },
     async mounted() {

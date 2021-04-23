@@ -14,25 +14,26 @@
   </v-container>
 </template>
 <script>
-import PurchaseRecord from '../components/PurchaseRecord';
-import Inventory from '../components/Inventory';
-import SellRecord from '../components/SellRecord';
+  import PurchaseRecord from "../components/PurchaseRecord";
+  import Inventory from "../components/Inventory";
+  import SellRecord from "../components/SellRecord";
 
   export default {
-      components: {
-          'purchase-record': PurchaseRecord,
-          'inventory': Inventory,
-          'sell-record': SellRecord
-      },
-      data: () => {
-          return {
-              tab: null,
-              items: [
-                  { component: 'purchase-record', text: '購入紀錄' },
-                  { component: 'inventory', text: '庫存' },
-                  { component: 'sell-record', text: '賣出紀錄' }
-                ]
-          }
-      }
-  }
+    components: {
+      "purchase-record": PurchaseRecord,
+      inventory: Inventory,
+      "sell-record": SellRecord,
+    },
+    data: () => {
+      return {
+        tab: null,
+        items: [
+          { component: "purchase-record", text: "購入紀錄" },
+          { component: "inventory", text: "庫存" },
+          { component: "sell-record", text: "賣出紀錄" },
+          { component: "settlement-record", text: "結算紀錄" },
+        ],
+      };
+    },
+  };
 </script>

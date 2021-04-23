@@ -1,32 +1,34 @@
 <template>
-  <v-container> 
+  <v-container>
     <v-btn @click="increment">Count</v-btn>
-    {{count}}
+    {{ count }}
     <v-btn @click="goFaceMask">Go To Face Mask</v-btn>
   </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+  import { mapState } from "vuex";
   export default {
     name: "HelloWorld",
     data: () => ({}),
     computed: {
       ...mapState({
-        count: 'count'
-      })
+        count: state => state.count
+      }),
+    },
+    mounted() {
+      console.log(this.$store);
     },
     methods: {
       increment() {
         this.$store.commit("increment");
-        console.log(this.$store.state.count);
       },
-      queryFaceMasks () {
-        this.$store.dispatch('queryFaceMasks');
+      queryFaceMasks() {
+        this.$store.dispatch("queryFaceMasks");
       },
       goFaceMask() {
-        this.$router.push('face-mask')
-      }
+        this.$router.push("face-mask");
+      },
     },
   };
 </script>
