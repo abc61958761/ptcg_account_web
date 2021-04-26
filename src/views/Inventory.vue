@@ -29,10 +29,10 @@
             {{ item.count }}
           </v-list-item-content>
           <v-list-item-content>
-            {{ item.count * item.price }}
+            {{ item.total_price }}
           </v-list-item-content>
           <v-list-item-content>
-            {{ item.price }}
+            {{ item.total_price / item.count || 0 }}
           </v-list-item-content>
         </v-list-item>
       </div>

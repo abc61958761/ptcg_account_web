@@ -26,8 +26,8 @@
           {{ item.sold.payee }}
         </v-chip>
       </template>
-      <template v-slot:item.sold.price="{ item }">
-        ＄{{ item.sold.price }}
+      <template v-slot:item.sold.total_price="{ item }">
+        ＄{{ item.sold.total_price }}
       </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -35,7 +35,7 @@
             v-for="sold_record of item.sold_records"
             :key="sold_record.record.id"
           >
-          <v-list-item-content></v-list-item-content>
+            <v-list-item-content></v-list-item-content>
             <v-list-item-content>
               <v-list-item-title>{{
                 sold_record.pokemon.name
@@ -44,13 +44,18 @@
             <v-list-item-content>
               <v-list-item-title>
                 <span class="mr-10"> {{ sold_record.record.count }} 張 </span>
-                <span>{{ sold_record.record.price }} / 張 </span>
+                <span
+                  >{{
+                    sold_record.record.total_price / sold_record.record.count
+                  }}
+                  / 張
+                </span>
               </v-list-item-title>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>＄{{
-                sold_record.record.count * sold_record.record.price
-              }}</v-list-item-title>
+              <v-list-item-title
+                >＄{{ sold_record.record.total_price }}</v-list-item-title
+              >
             </v-list-item-content>
           </v-list-item>
         </td>
@@ -84,7 +89,7 @@
           { text: "品項名稱", value: "sold.name" },
           { text: "賣出時間", value: "sold.date" },
           { text: "銷售通路", value: "sold.salesChannel" },
-          { text: "賣出金額", value: "sold.price" },
+          { text: "賣出金額", value: "sold.total_price" },
           { text: "", value: "data-table-expand" },
         ],
         tempDeleteItems: new Set(),

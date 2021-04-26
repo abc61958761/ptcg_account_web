@@ -27,8 +27,8 @@
         {{ new Date(item.purchase.date).getMonth() }} /
         {{ new Date(item.purchase.date).getDate() }}
       </template>
-      <template v-slot:item.purchase.price="{ item }">
-        ＄{{ item.purchase.price }}
+      <template v-slot:item.purchase.total_price="{ item }">
+        ＄{{ item.purchase.total_price }}
       </template>
       <template v-slot:item.purchase.purchaser="{ item }">
         <v-chip dark>
@@ -51,14 +51,18 @@
                 <span class="mr-10">
                   {{ purchase_record.record.count }} 張
                 </span>
-                <span>{{ purchase_record.record.price }} / 張 </span>
+                <span
+                  >{{
+                    purchase_record.record.total_price /
+                      purchase_record.record.count
+                  }}
+                  / 張
+                </span>
               </v-list-item-title>
             </v-list-item-content>
             <v-list-item-content>
               <v-list-item-title
-                >＄{{
-                  purchase_record.record.count * purchase_record.record.price
-                }}</v-list-item-title
+                >＄{{ purchase_record.record.total_price }}</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
@@ -99,7 +103,7 @@
           { text: "購入者", value: "purchase.purchaser" },
           { text: "品項名稱", value: "purchase.name" },
           { text: "購入時間", value: "purchase.date" },
-          { text: "購入金額", value: "purchase.price" },
+          { text: "購入金額", value: "purchase.total_price" },
           { text: "", value: "data-table-expand" },
         ],
         tempDeleteItems: new Set(),
