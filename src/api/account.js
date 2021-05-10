@@ -31,8 +31,41 @@ const accounts = {
     return await appserver.delete(`${API_URL}/purchaseRecords`, { data });
   },
   async deleteSoldRecords(data) {
-    
     return await appserver.delete(`${API_URL}/soldRecords`, { data });
+  },
+  async updateSettlement(params) {
+    return await appserver.patch(`${API_URL}/settlementRecords`, { params });
+  },
+  async querySettlements() {
+    return await appserver.get(`${API_URL}/settlements`);
+  },
+  async queryUnSettlements() {
+    return await appserver.get(`${API_URL}/settlements/unsettlement`);
+  },
+  async getSettlementDetail(params) {
+    return await appserver.get(`${API_URL}/settlements/detail`, { params });
+  },
+  async splitSold(id) {
+    return await appserver.patch(`${API_URL}/soldRecords/splits/${id}`, {
+      split: true,
+    });
+  },
+  async splitPurchase(id) {
+    return await appserver.patch(`${API_URL}/purchaseRecords/splits/${id}`, {
+      split: true,
+    });
+  },
+  async splitSolds(date) {
+    return await appserver.patch(`${API_URL}/soldRecords/splits`, {
+      split: true,
+      date,
+    });
+  },
+  async splitPurchases(date) {
+    return await appserver.patch(`${API_URL}/purchaseRecords/splits`, {
+      split: true,
+      date,
+    });
   },
 };
 

@@ -45,6 +45,7 @@
             :items="payeeItems"
           ></v-select>
           <v-menu
+            class="mr-4"
             ref="menu"
             v-model="menu"
             :close-on-content-click="false"
@@ -75,6 +76,11 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
+
+          <v-checkbox
+            label="已拆帳"
+            v-model="newSoldItems.sold.split"
+          ></v-checkbox>
         </div>
 
         <v-list
@@ -188,12 +194,14 @@
             payee: "",
             sales_channel: "",
             date: new Date().toISOString().substr(0, 10),
+            split: false,
           },
           soldRecords: [
             {
               pokemon_id: "",
               price: 0,
               count: 0,
+              split: false,
             },
           ],
         },
@@ -227,6 +235,7 @@
           pokemon_id: "",
           price: 0,
           count: 0,
+          split: false,
         });
       },
       async submitAction() {
@@ -236,6 +245,7 @@
         for (const item of this.newSoldItems.soldRecords) {
           if (item.count <= 0) return;
           if (!item.pokemon_id) return;
+          item.split = this.newSoldItems.sold.split;
         }
 
         await this.$store.dispatch("createSoldRecord", this.newSoldItems);

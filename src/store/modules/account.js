@@ -6,6 +6,8 @@ const account = {
     inventories: [],
     soldRecords: [],
     pokemons: [],
+    settlements: [],
+    settlementDetail: {},
   },
   mutations: {
     updatePurchaseRecords(state, payload) {
@@ -19,6 +21,12 @@ const account = {
     },
     updatePokemons(state, payload) {
       state.pokemons = payload;
+    },
+    updateSettlements(state, payload) {
+      state.settlements = payload;
+    },
+    updateSettlementDetail(state, payload) {
+      state.settlementDetail = payload;
     },
   },
   actions: {
@@ -86,6 +94,55 @@ const account = {
       await dispatch("querySoldRecords");
       await dispatch("queryInventories");
     },
+    async updateSettlement({ dispatch }, params) {
+      await accounts.updateSettlement(params);
+      await dispatch("querySettlements");
+    },
+    async querySettlements({ commit }) {
+      const unsettlementRes = await accounts.queryUnSettlements();
+      const settlementsRes = await accounts.querySettlements();
+
+      const unsettlements = Object.values(unsettlementRes.data.data).map(
+        (item) => {
+          return {
+            ...item,
+            status: "unsettlement",
+          };
+        }
+      );
+      const settlements = settlementsRes.data.data.map((item) => {
+        return {
+          year: item.year,
+          month: item.month,
+          status: "settlemented",
+          purchase: item.carol_purchase_price + item.chad_purchase_price,
+          sold: item.carol_sold_price + item.chad_sold_price,
+        };
+      });
+
+      commit("updateSettlements", [...unsettlements, ...settlements]);
+    },
+    async getSettlementDetail({ commit }, params) {
+      const response = await accounts.getSettlementDetail(params);
+
+      commit("updateSettlementDetail", response.data);
+    },
+    async splitSold({ dispatch }, { year, month, id }) {
+      await accounts.splitSold(id);
+      await dispatch("getSettlementDetail", { year, month });
+    },
+    async splitPurchase({ dispatch }, { year, month, id }) {
+      await accounts.splitPurchase(id);
+      await dispatch("getSettlementDetail", { year, month });
+    },
+    async splitSolds({ dispatch }, date) {
+      await accounts.splitSolds(date);
+      await dispatch("getSettlementDetail", date);
+    },
+    async splitPurchases({ dispatch }, date) {
+      await accounts.splitPurchases(date);
+      await dispatch("getSettlementDetail", date);
+    },
   },
   getters: {
     purchaseRecords(state) {
@@ -99,6 +156,12 @@ const account = {
     },
     pokemons(state) {
       return state.pokemons;
+    },
+    settlements(state) {
+      return state.settlements;
+    },
+    settlementDetail(state) {
+      return state.settlementDetail;
     },
   },
 };
