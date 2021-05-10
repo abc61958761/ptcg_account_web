@@ -125,7 +125,7 @@
                 >
                 <v-list-item-content>
                   {{ new Date(unsplitPurchase.date).getFullYear() }} /
-                  {{ new Date(unsplitPurchase.date).getMonth() }} /
+                  {{ new Date(unsplitPurchase.date).getMonth()+1 }} /
                   {{
                     new Date(unsplitPurchase.date).getDate()
                   }}</v-list-item-content

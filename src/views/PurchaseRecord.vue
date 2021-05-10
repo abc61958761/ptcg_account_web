@@ -24,7 +24,7 @@
       </template>
       <template v-slot:item.purchase.date="{ item }">
         {{ new Date(item.purchase.date).getFullYear() }} /
-        {{ new Date(item.purchase.date).getMonth() }} /
+        {{ new Date(item.purchase.date).getMonth()+1 }} /
         {{ new Date(item.purchase.date).getDate() }}
       </template>
       <template v-slot:item.purchase.total_price="{ item }">

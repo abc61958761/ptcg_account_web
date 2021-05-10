@@ -18,7 +18,7 @@
       </template>
       <template v-slot:item.sold.date="{ item }">
         {{ new Date(item.sold.date).getFullYear() }} /
-        {{ new Date(item.sold.date).getMonth() }} /
+        {{ new Date(item.sold.date).getMonth()+1 }} /
         {{ new Date(item.sold.date).getDate() }}
       </template>
       <template v-slot:item.sold.payee="{ item }">
