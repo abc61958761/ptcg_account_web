@@ -82,9 +82,11 @@ const account = {
       return response;
     },
     async createSoldRecord({ dispatch }, newSoldRecord) {
-      await accounts.createSoldRecord(newSoldRecord);
+      const response = await accounts.createSoldRecord(newSoldRecord);
       await dispatch("querySoldRecords");
       await dispatch("queryInventories");
+
+      return response;
     },
     async deletePurchaseRecords({ dispatch }, deletePurchaseRecordIds) {
       await accounts.deletePurchaseRecords(deletePurchaseRecordIds);

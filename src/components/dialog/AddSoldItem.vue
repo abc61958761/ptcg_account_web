@@ -4,20 +4,19 @@
     transition="dialog-bottom-transition"
     fullscreen
   >
-    <v-card style="display: flex; flex-direction: column; height: 100%">
+    <v-card class="d-flex flex-column" style="height: 100%">
       <v-card-title class="headline grey lighten-2">
         賣出商品登陸
       </v-card-title>
 
       <v-card-text
+        class="d-flex flex-column"
         style="flex: 1;
-          display: flex;
-          flex-direction: column;
           height: 100%;
           overflow: hidden;
           padding-bottom: 0;"
       >
-        <div style="display: flex; align-items: center" class="mb-2">
+        <div style="align-items: center" class="d-flex mb-2">
           <v-text-field
             v-model="newSoldItems.sold.name"
             dense
@@ -84,9 +83,8 @@
         </div>
 
         <v-list
+          class="d-flex flex-column"
           style="height: 100%;
-            display: flex;
-            flex-direction: column;
             overflow: hidden"
         >
           <v-list-item style="flex: 0">
@@ -173,11 +171,28 @@
         <v-btn @click="closeDialogAction">
           取消
         </v-btn>
-        <v-btn color="primary" @click="submitAction">
+        <v-btn
+          color="primary"
+          :loading="loading"
+          :disabled="loading"
+          @click="submitAction"
+        >
           登錄
+          <template v-slot:loader>
+            <span>大便去</span>
+          </template>
         </v-btn>
       </v-card-actions>
     </v-card>
+
+    <v-snackbar v-model="snackbar" timeout="3000" color="error">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar = false">
+          關閉
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-dialog>
 </template>
 <script>
@@ -188,6 +203,9 @@
     data: () => {
       return {
         menu: false,
+        loading: false,
+        message: null,
+        snackbar: false,
         newSoldItems: {
           sold: {
             name: "",
@@ -239,18 +257,44 @@
         });
       },
       async submitAction() {
-        if (!this.newSoldItems.sold.name) return;
-        if (!this.newSoldItems.sold.payee) return;
-
-        for (const item of this.newSoldItems.soldRecords) {
-          if (item.count <= 0) return;
-          if (!item.pokemon_id) return;
-          item.split = this.newSoldItems.sold.split;
+        if (!this.newSoldItems.sold.name) {
+          this.snackbar = true;
+          this.message = "品項名稱未填寫";
+          return;
+        }
+        if (!this.newSoldItems.sold.payee) {
+          this.snackbar = true;
+          this.message = "收款人未填寫";
+          return;
         }
 
-        await this.$store.dispatch("createSoldRecord", this.newSoldItems);
+        for (const item of this.newSoldItems.soldRecords) {
+          if (item.count <= 0) {
+            this.snackbar = true;
+            this.message = "商品數量未填寫";
+            return;
+          }
+          if (!item.pokemon_id) {
+            this.snackbar = true;
+            this.message = "未選擇商品";
+            return;
+          }
+          item.split = this.newSoldItems.sold.split;
+        }
+        this.loading = true;
 
-        this.closeDialogAction();
+        const response = await this.$store.dispatch(
+          "createSoldRecord",
+          this.newSoldItems
+        );
+
+        if (response.status === 201) {
+          this.closeDialogAction();
+        } else {
+          this.snackbar = true;
+          this.message = "新增賣出品項失敗";
+        }
+        this.loading = false;
       },
       clearData() {
         this.newSoldItems.sold = {

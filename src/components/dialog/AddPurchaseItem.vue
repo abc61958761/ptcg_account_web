@@ -9,7 +9,6 @@
         購買商品登錄
       </v-card-title>
 
-      <!-- <v-container> -->
       <v-card-text
         class="d-flex flex-column"
         style="flex: 1;
@@ -17,7 +16,7 @@
           overflow: hidden;
           padding-bottom: 0;"
       >
-        <div style="display: flex; align-items: center" class="mb-2">
+        <div style="align-items: center" class="d-flex mb-2">
           <v-text-field
             v-model="newPurchaseItems.purchase.name"
             dense
@@ -79,9 +78,8 @@
         </div>
 
         <v-list
+          class="d-flex flex-column"
           style="height: 100%;
-            display: flex;
-            flex-direction: column;
             overflow: hidden"
         >
           <v-list-item style="flex: 0">
@@ -176,7 +174,7 @@
         >
           登錄
           <template v-slot:loader>
-            <span>大便去...</span>
+            <span>大便去</span>
           </template>
         </v-btn>
       </v-card-actions>
@@ -278,7 +276,7 @@
 
           item.split = this.newPurchaseItems.purchase.split;
         }
-        
+
         this.loading = true;
         const response = await this.$store.dispatch(
           "createPurchaseRecord",
