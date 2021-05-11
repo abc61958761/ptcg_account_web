@@ -250,7 +250,7 @@
           split: false,
         });
       },
-      async submitAction() {
+      submitAction() {
         if (!this.newPurchaseItems.purchase.name) {
           this.snackbar = true;
           this.message = "品項名稱未填寫";
@@ -278,18 +278,17 @@
         }
 
         this.loading = true;
-        const response = await this.$store.dispatch(
-          "createPurchaseRecord",
-          this.newPurchaseItems
-        );
-
-        if (response.status === 201) {
-          this.closeDialogAction();
-        } else {
-          this.snackbar = true;
-          this.message = "新增品項失敗";
-        }
-        this.loading = false;
+        this.$store
+          .dispatch("createPurchaseRecord", this.newPurchaseItems)
+          .then(() => {
+            this.closeDialogAction();
+            this.loading = false;
+          })
+          .catch((error) => {
+            this.snackbar = true;
+            this.message = "新增品項失敗";
+            this.loading = false;
+          });
       },
       clearData() {
         this.newPurchaseItems.purchase = {

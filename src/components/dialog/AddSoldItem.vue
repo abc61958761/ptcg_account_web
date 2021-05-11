@@ -256,7 +256,7 @@
           split: false,
         });
       },
-      async submitAction() {
+      submitAction() {
         if (!this.newSoldItems.sold.name) {
           this.snackbar = true;
           this.message = "品項名稱未填寫";
@@ -283,18 +283,17 @@
         }
         this.loading = true;
 
-        const response = await this.$store.dispatch(
-          "createSoldRecord",
-          this.newSoldItems
-        );
-
-        if (response.status === 201) {
-          this.closeDialogAction();
-        } else {
-          this.snackbar = true;
-          this.message = "新增賣出品項失敗";
-        }
-        this.loading = false;
+        this.$store
+          .dispatch("createSoldRecord", this.newSoldItems)
+          .then(() => {
+            this.closeDialogAction();
+            this.loading = false;
+          })
+          .catch((error) => {
+            this.snackbar = true;
+            this.message = "新增賣出品項失敗";
+            this.loading = false;
+          });
       },
       clearData() {
         this.newSoldItems.sold = {
