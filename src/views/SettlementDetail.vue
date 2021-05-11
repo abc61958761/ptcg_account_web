@@ -125,7 +125,7 @@
                 >
                 <v-list-item-content>
                   {{ new Date(unsplitPurchase.date).getFullYear() }} /
-                  {{ new Date(unsplitPurchase.date).getMonth()+1 }} /
+                  {{ new Date(unsplitPurchase.date).getMonth() + 1 }} /
                   {{
                     new Date(unsplitPurchase.date).getDate()
                   }}</v-list-item-content
@@ -186,11 +186,23 @@
                 v-for="unsplitSold in settlementDetail.unsplitSolds"
                 :key="unsplitSold.id"
               >
-                <v-list-item-avatar>
+                <div class="mr-4">
                   <v-chip>{{ unsplitSold.payee }}</v-chip>
-                </v-list-item-avatar>
+                </div>
 
-                <v-list-item-content> </v-list-item-content>
+                <v-list-item-content>
+                  {{ unsplitSold.name }}</v-list-item-content
+                >
+                <v-list-item-content>
+                  {{ new Date(unsplitSold.date).getFullYear() }} /
+                  {{ new Date(unsplitSold.date).getMonth() + 1 }} /
+                  {{
+                    new Date(unsplitSold.date).getDate()
+                  }}</v-list-item-content
+                >
+                <v-list-item-content>
+                  {{ unsplitSold.total_price }}</v-list-item-content
+                >
 
                 <v-list-item-action>
                   <v-btn icon @click="splitSold(unsplitSold.id)">

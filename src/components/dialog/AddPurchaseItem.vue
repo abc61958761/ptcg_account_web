@@ -278,6 +278,7 @@
 
           item.split = this.newPurchaseItems.purchase.split;
         }
+        
         this.loading = true;
         const response = await this.$store.dispatch(
           "createPurchaseRecord",
