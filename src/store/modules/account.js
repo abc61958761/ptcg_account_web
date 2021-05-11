@@ -75,9 +75,11 @@ const account = {
       await dispatch("queryPokemons");
     },
     async createPurchaseRecord({ dispatch }, newPurchaseRecord) {
-      await accounts.createPurchaseRecord(newPurchaseRecord);
+      const response = await accounts.createPurchaseRecord(newPurchaseRecord);
       await dispatch("queryPurchaseRecords");
       await dispatch("queryInventories");
+
+      return response;
     },
     async createSoldRecord({ dispatch }, newSoldRecord) {
       await accounts.createSoldRecord(newSoldRecord);

@@ -4,16 +4,15 @@
     transition="dialog-bottom-transition"
     fullscreen
   >
-    <v-card style="display: flex; flex-direction: column; height: 100%">
+    <v-card class="d-flex flex-column" style="height: 100%">
       <v-card-title class="headline grey lighten-2">
         購買商品登錄
       </v-card-title>
 
       <!-- <v-container> -->
       <v-card-text
+        class="d-flex flex-column"
         style="flex: 1;
-          display: flex;
-          flex-direction: column;
           height: 100%;
           overflow: hidden;
           padding-bottom: 0;"
@@ -169,12 +168,28 @@
         <v-btn @click="closeDialogAction">
           取消
         </v-btn>
-        <v-btn color="primary" @click="submitAction">
+        <v-btn
+          color="primary"
+          @click="submitAction"
+          :loading="loading"
+          :disabled="loading"
+        >
           登錄
+          <template v-slot:loader>
+            <span>大便去...</span>
+          </template>
         </v-btn>
       </v-card-actions>
-      <!-- </v-container> -->
     </v-card>
+
+    <v-snackbar v-model="snackbar" timeout="3000" color="error">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="white" text v-bind="attrs" @click="snackbar = false">
+          關閉
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-dialog>
 </template>
 <script>
@@ -186,6 +201,9 @@
       return {
         date: new Date().toISOString().substr(0, 10),
         menu: false,
+        snackbar: false,
+        loading: false,
+        message: null,
         newPurchaseItems: {
           purchase: {
             name: "",
@@ -231,26 +249,47 @@
           pokemon_id: "",
           price: 0,
           count: 0,
-          split: false
+          split: false,
         });
       },
       async submitAction() {
-        if (!this.newPurchaseItems.purchase.name) return;
-        if (!this.newPurchaseItems.purchase.purchaser) return;
-
-        for (const item of this.newPurchaseItems.purchaseRecords) {
-          if (item.count <= 0) return;
-          if (!item.pokemon_id) return;
-
-          item.split = this.newPurchaseItems.purchase.split
+        if (!this.newPurchaseItems.purchase.name) {
+          this.snackbar = true;
+          this.message = "品項名稱未填寫";
+          return;
+        }
+        if (!this.newPurchaseItems.purchase.purchaser) {
+          this.snackbar = true;
+          this.message = "購買人未填寫";
+          return;
         }
 
-        await this.$store.dispatch(
+        for (const item of this.newPurchaseItems.purchaseRecords) {
+          if (item.count <= 0) {
+            this.snackbar = true;
+            this.message = "商品數量未填寫";
+            return;
+          }
+          if (!item.pokemon_id) {
+            this.snackbar = true;
+            this.message = "未選擇商品";
+            return;
+          }
+
+          item.split = this.newPurchaseItems.purchase.split;
+        }
+
+        const response = await this.$store.dispatch(
           "createPurchaseRecord",
           this.newPurchaseItems
         );
 
-        this.closeDialogAction();
+        if (response.status === 201) {
+          this.closeDialogAction();
+        } else {
+          this.snackbar = true;
+          this.message = "新增品項失敗";
+        }
       },
       clearData() {
         this.newPurchaseItems.purchase = {
