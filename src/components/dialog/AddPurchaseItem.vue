@@ -278,7 +278,7 @@
 
           item.split = this.newPurchaseItems.purchase.split;
         }
-
+        this.loading = true;
         const response = await this.$store.dispatch(
           "createPurchaseRecord",
           this.newPurchaseItems
@@ -290,6 +290,7 @@
           this.snackbar = true;
           this.message = "新增品項失敗";
         }
+        this.loading = false;
       },
       clearData() {
         this.newPurchaseItems.purchase = {
