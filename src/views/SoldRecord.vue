@@ -12,18 +12,23 @@
     >
       <template v-slot:item.delete="{ item }">
         <v-checkbox
+          hide-details
           v-model="item.isDelete"
           @change="deleteItem(item.sold.id, item.isDelete)"
         ></v-checkbox>
       </template>
       <template v-slot:item.sold.date="{ item }">
         {{ new Date(item.sold.date).getFullYear() }} /
-        {{ new Date(item.sold.date).getMonth()+1 }} /
+        {{ new Date(item.sold.date).getMonth() + 1 }} /
         {{ new Date(item.sold.date).getDate() }}
       </template>
       <template v-slot:item.sold.payee="{ item }">
-        <v-chip dark>
+        <v-chip small dark class="mr-2">
           {{ item.sold.payee }}
+        </v-chip>
+        <v-chip small dark>
+          <span v-if="item.sold.split === 'true'">已拆帳</span>
+          <span v-else>未拆帳</span>
         </v-chip>
       </template>
       <template v-slot:item.sold.total_price="{ item }">
@@ -37,12 +42,12 @@
           >
             <v-list-item-content></v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>{{
+              <div>{{
                 sold_record.pokemon.name
-              }}</v-list-item-title>
+              }}</div>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>
+              <div>
                 <span class="mr-10"> {{ sold_record.record.count }} 張 </span>
                 <span
                   >{{
@@ -50,11 +55,11 @@
                   }}
                   / 張
                 </span>
-              </v-list-item-title>
+              </div>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title
-                >＄{{ sold_record.record.total_price }}</v-list-item-title
+              <div
+                >＄{{ sold_record.record.total_price }}</div
               >
             </v-list-item-content>
           </v-list-item>

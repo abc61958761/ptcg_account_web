@@ -18,21 +18,26 @@
     >
       <template v-slot:item.delete="{ item }">
         <v-checkbox
+          hide-details
           v-model="item.isDelete"
           @change="deleteItem(item.purchase.id, item.isDelete)"
         ></v-checkbox>
       </template>
       <template v-slot:item.purchase.date="{ item }">
         {{ new Date(item.purchase.date).getFullYear() }} /
-        {{ new Date(item.purchase.date).getMonth()+1 }} /
+        {{ new Date(item.purchase.date).getMonth() + 1 }} /
         {{ new Date(item.purchase.date).getDate() }}
       </template>
       <template v-slot:item.purchase.total_price="{ item }">
         ＄{{ item.purchase.total_price }}
       </template>
       <template v-slot:item.purchase.purchaser="{ item }">
-        <v-chip dark>
+        <v-chip small dark class="mr-2">
           {{ item.purchase.purchaser }}
+        </v-chip>
+        <v-chip small dark>
+          <span v-if="item.purchase.split === 'true'">已拆帳</span>
+          <span v-else>未拆帳</span>
         </v-chip>
       </template>
       <template v-slot:expanded-item="{ headers, item }">
@@ -40,17 +45,13 @@
           <v-list-item
             v-for="(purchase_record, index) of item.purchase_records"
             :key="index"
-          >
+            ><v-list-item-content> </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>{{
-                purchase_record.pokemon.name
-              }}</v-list-item-title>
+              <div>{{ purchase_record.pokemon.name }}</div>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title>
-                <span class="mr-10">
-                  {{ purchase_record.record.count }} 張
-                </span>
+              <div>
+                <span class="mr-10">{{ purchase_record.record.count }} 張</span>
                 <span
                   >{{
                     purchase_record.record.total_price /
@@ -58,12 +59,10 @@
                   }}
                   / 張
                 </span>
-              </v-list-item-title>
+              </div>
             </v-list-item-content>
             <v-list-item-content>
-              <v-list-item-title
-                >＄{{ purchase_record.record.total_price }}</v-list-item-title
-              >
+              <div>＄{{ purchase_record.record.total_price }}</div>
             </v-list-item-content>
           </v-list-item>
         </td>

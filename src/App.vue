@@ -58,8 +58,19 @@
       tr.v-data-table__expanded__content {
         box-shadow: 0 0 !important;
         background: rgba(0, 0, 0, 0.1) !important;
-        font-size: 14px !important;
+        font-size: 0.875rem !important;
       }
+    }
+  }
+  table {
+    tr:not(.v-data-table__expanded__content) td:nth-child(1) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .v-input.v-input--selection-controls {
+      margin-top: 0;
+      padding-top: 0;
     }
   }
 </style>
