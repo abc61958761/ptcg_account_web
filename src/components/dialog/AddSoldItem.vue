@@ -293,6 +293,7 @@
             this.snackbar = true;
             this.message = "新增賣出品項失敗";
             this.loading = false;
+            console.log(error)
           });
       },
       clearData() {

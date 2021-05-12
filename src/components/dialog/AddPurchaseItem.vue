@@ -288,6 +288,7 @@
             this.snackbar = true;
             this.message = "新增品項失敗";
             this.loading = false;
+            console.log(error)
           });
       },
       clearData() {
