@@ -288,14 +288,13 @@
             this.snackbar = true;
             this.message = "新增品項失敗";
             this.loading = false;
-            console.log(error)
+            console.log(error);
           });
       },
       clearData() {
         this.newPurchaseItems.purchase = {
           name: "",
           purchaser: "",
-          sales_channel: "",
           date: new Date().toISOString().substr(0, 10),
         };
         this.newPurchaseItems.purchaseRecords = [
