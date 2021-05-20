@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div style="height: 100%; overflow: hidden;">
     <h3>庫存紀錄</h3>
-    <v-list>
+    <v-list style="height: 100%; overflow: hidden;">
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>卡片名稱</v-list-item-title>
@@ -16,7 +16,7 @@
           <v-list-item-title>單張成本</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <div>
+      <div style="height: 100%; overflow: auto; padding-bottom: 80px">
         <v-list-item
           v-for="item of inventories"
           :key="item.id"
