@@ -64,16 +64,11 @@ const account = {
         })
       );
     },
-    // async queryPokemons({ commit }, params) {
-    //   const response = await accounts.queryPokemons(params);
+    async queryPokemons({ commit }, params) {
+      const response = await accounts.queryPokemons(params);
 
-    //   commit(
-    //     "updatePokemons",
-    //     response.data.data.map((pokemon) => {
-    //       return { ...pokemon, isEdit: false };
-    //     })
-    //   );
-    // },
+      commit("updatePokemons", response.data.data);
+    },
     async createPokemon({ dispatch }, newPokemon) {
       await accounts.createPokemon(newPokemon);
       // await dispatch("queryPokemons");
