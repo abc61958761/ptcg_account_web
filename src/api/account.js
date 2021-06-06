@@ -12,11 +12,14 @@ const accounts = {
   async createPokemon(params) {
     return await appserver.post(`${API_URL}/pokemon`, params);
   },
+  async createPokemons(params) {
+    return await appserver.post(`${API_URL}/pokemons`, params);
+  },
   async queryPokemons(params) {
     return await appserver.get(`${API_URL}/pokemons`, { params });
   },
-  async queryInventories() {
-    return await appserver.get(`${API_URL}/inventories`);
+  async queryInventories(params) {
+    return await appserver.get(`${API_URL}/inventories`, { params });
   },
   async querySoldRecords() {
     return await appserver.get(`${API_URL}/soldRecords`);

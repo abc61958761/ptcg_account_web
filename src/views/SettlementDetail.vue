@@ -81,6 +81,8 @@
           買入未拆帳
           <v-spacer></v-spacer>
           <v-btn
+            color="primary"
+            depressed
             @click="splitPurchases()"
             :disabled="settlementDetail.unsplitPurchases.length === 0"
             >全部結算</v-btn
@@ -150,6 +152,8 @@
           賣出未拆帳
           <v-spacer></v-spacer>
           <v-btn
+            color="primary"
+            depressed
             @click="splitSolds()"
             :disabled="settlementDetail.unsplitSolds.length === 0"
             >全部結算</v-btn

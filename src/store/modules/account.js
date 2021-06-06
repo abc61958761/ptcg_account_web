@@ -40,10 +40,19 @@ const account = {
         })
       );
     },
-    async queryInventories({ commit }) {
-      const response = await accounts.queryInventories();
+    async queryInventories({ commit }, params) {
+      const response = await accounts.queryInventories(params);
 
-      commit("updateInventories", response.data.data);
+      commit(
+        "updateInventories",
+        response.data.data.map((item) => {
+          item.pokemon = {
+            ...item.pokemon,
+            isEdit: false,
+          };
+          return item;
+        })
+      );
     },
     async querySoldRecords({ commit }) {
       const response = await accounts.querySoldRecords();
@@ -55,24 +64,29 @@ const account = {
         })
       );
     },
-    async queryPokemons({ commit }, params) {
-      const response = await accounts.queryPokemons(params);
+    // async queryPokemons({ commit }, params) {
+    //   const response = await accounts.queryPokemons(params);
 
-      commit(
-        "updatePokemons",
-        response.data.data.map((pokemon) => {
-          return { ...pokemon, isEdit: false };
-        })
-      );
-    },
+    //   commit(
+    //     "updatePokemons",
+    //     response.data.data.map((pokemon) => {
+    //       return { ...pokemon, isEdit: false };
+    //     })
+    //   );
+    // },
     async createPokemon({ dispatch }, newPokemon) {
       await accounts.createPokemon(newPokemon);
-      await dispatch("queryPokemons");
+      // await dispatch("queryPokemons");
+      await dispatch("queryInventories");
+    },
+    async createPokemons({ dispatch }, newPokemons) {
+      await accounts.createPokemons(newPokemons);
+      // await dispatch("queryPokemons");
       await dispatch("queryInventories");
     },
     async updatePokemon({ dispatch }, params) {
       await accounts.updatePokemon(params.id, params);
-      await dispatch("queryPokemons");
+      await dispatch("queryInventories");
     },
     async createPurchaseRecord({ dispatch }, newPurchaseRecord) {
       const response = await accounts.createPurchaseRecord(newPurchaseRecord);

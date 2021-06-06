@@ -5,81 +5,76 @@
         overflow: hidden;"
   >
     <h3>買入紀錄</h3>
-    <v-data-table
-      :headers="dessertHeaders"
-      :items="purchaseRecords"
-      :expanded.sync="expanded"
-      hide-default-header
-      item-key="purchase.id"
-      show-expand
-      class="d-flex flex-column flex-grow-1"
-      style="height: 100%;
-        overflow: hidden;"
-    >
-      <template v-slot:item.delete="{ item }">
-        <v-checkbox
-          hide-details
-          v-model="item.isDelete"
-          @change="deleteItem(item.purchase.id, item.isDelete)"
-        ></v-checkbox>
-      </template>
-      <template v-slot:item.purchase.date="{ item }">
-        {{ new Date(item.purchase.date).getFullYear() }} /
-        {{ new Date(item.purchase.date).getMonth() + 1 }} /
-        {{ new Date(item.purchase.date).getDate() }}
-      </template>
-      <template v-slot:item.purchase.total_price="{ item }">
-        ＄{{ item.purchase.total_price }}
-      </template>
-      <template v-slot:item.purchase.purchaser="{ item }">
-        <v-chip small dark class="mr-2">
-          {{ item.purchase.purchaser }}
-        </v-chip>
-        <v-chip small dark>
-          <span v-if="item.purchase.split === 'true'">已拆帳</span>
-          <span v-else>未拆帳</span>
-        </v-chip>
-      </template>
-      <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">
-          <v-list-item
-            v-for="(purchase_record, index) of item.purchase_records"
-            :key="index"
-            ><v-list-item-content> </v-list-item-content>
-            <v-list-item-content>
-              <div>{{ purchase_record.pokemon.name }}</div>
-            </v-list-item-content>
-            <v-list-item-content>
-              <div>
-                <span class="mr-10">{{ purchase_record.record.count }} 張</span>
-                <span
-                  >{{
-                    purchase_record.record.total_price /
-                      purchase_record.record.count
-                  }}
-                  / 張
-                </span>
-              </div>
-            </v-list-item-content>
-            <v-list-item-content>
-              <div>＄{{ purchase_record.record.total_price }}</div>
-            </v-list-item-content>
-          </v-list-item>
-        </td>
-      </template>
-    </v-data-table>
+
+    <v-list style="height: 100%;overflow: scroll;">
+      <v-list-group v-for="item of purchaseRecords" :key="item.purchase.id">
+        <template v-slot:activator>
+          <v-list-item-content style="max-width: 50px">
+            <v-checkbox
+              class="ma-0 pa-0 ml-2"
+              hide-details
+              v-model="item.isDelete"
+              @change="deleteItem(item.purchase.id, item.isDelete)"
+            ></v-checkbox>
+          </v-list-item-content>
+          <v-list-item-content style="display: block">
+            <v-chip small dark class="mr-2" :class="[item.purchase.purchaser]">
+              {{ item.purchase.purchaser }}
+            </v-chip>
+            <v-chip
+              small
+              dark
+              :class="[item.purchase.split === 'true' ? split : unsplit]"
+            >
+              <span v-if="item.purchase.split === 'true'">已拆帳</span>
+              <span v-else>未拆帳</span>
+            </v-chip>
+          </v-list-item-content>
+          <v-list-item-content>
+            {{ new Date(item.purchase.date).getFullYear() }} /
+            {{ new Date(item.purchase.date).getMonth() + 1 }} /
+            {{ new Date(item.purchase.date).getDate() }}
+          </v-list-item-content>
+          <v-list-item-content
+            >＄{{ item.purchase.total_price }}</v-list-item-content
+          >
+        </template>
+
+        <v-list-item
+          v-for="(purchase_record, index) of item.purchase_records"
+          :key="index"
+        >
+          <v-list-item-content style="max-width: 50px"> </v-list-item-content>
+          <v-list-item-content></v-list-item-content>
+          <v-list-item-content>
+            <div>{{ purchase_record.pokemon.name }}</div>
+          </v-list-item-content>
+          <v-list-item-content>
+            <div>
+              <span class="mr-10">{{ purchase_record.record.count }} 張</span>
+              <span
+                >{{
+                  purchase_record.record.total_price /
+                    purchase_record.record.count
+                }}
+                / 張
+              </span>
+            </div>
+          </v-list-item-content>
+          <v-list-item-content>
+            <div>＄{{ purchase_record.record.total_price }}</div>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
+    </v-list>
+
     <div class="mb-1 d-flex">
-      <v-btn @click="deleteItemsAction" :disabled="tempDeleteItems.size == 0"
+      <v-btn depressed color="primary"  @click="deleteItemsAction" :disabled="tempDeleteItems.size == 0"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-4" @click="cardDialogAction">新增名稱</v-btn>
-      <v-btn @click="itemDialogAction">新增品項</v-btn>
+      <v-btn depressed color="primary" @click="itemDialogAction">新增品項</v-btn>
     </div>
-    <add-card-dialog
-      :openDialog="openCardDialog"
-      @closeDialog="openCardDialog = false"
-    ></add-card-dialog>
     <add-item-dialog
       :openDialog="openItemDialog"
       @closeDialog="openItemDialog = false"
@@ -87,14 +82,13 @@
   </div>
 </template>
 <script>
-  import AddCard from "../components/dialog/AddCard";
   import AddPurchaseItem from "../components/dialog/AddPurchaseItem";
+
   import { mapGetters } from "vuex";
 
   export default {
     data: () => {
       return {
-        openCardDialog: false,
         openItemDialog: false,
         expanded: [],
         dessertHeaders: [
@@ -106,10 +100,11 @@
           { text: "", value: "data-table-expand" },
         ],
         tempDeleteItems: new Set(),
+        split: "split",
+        unsplit: "unsplit",
       };
     },
     components: {
-      "add-card-dialog": AddCard,
       "add-item-dialog": AddPurchaseItem,
     },
     computed: {
@@ -120,9 +115,6 @@
     methods: {
       itemDialogAction() {
         this.openItemDialog = true;
-      },
-      cardDialogAction() {
-        this.openCardDialog = true;
       },
       deleteItem(id, value) {
         if (value) {
@@ -143,3 +135,19 @@
     },
   };
 </script>
+<style lang="scss" scoped>
+  .v-chip {
+    &.Chad {
+      background: #80b2ff;
+    }
+    &.Carol {
+      background: #edacea;
+    }
+    &.split {
+      background: #56e18e;
+    }
+    &.unsplit {
+      background: #ffd08a;
+    }
+  }
+</style>

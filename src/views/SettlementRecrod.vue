@@ -3,7 +3,9 @@
     <div class="d-flex">
       <h3>結算紀錄</h3>
       <v-spacer></v-spacer>
-      <v-btn @click="updateSettlement">更新結算</v-btn>
+      <v-btn color="primary" depressed @click="updateSettlement"
+        >更新結算</v-btn
+      >
     </div>
     <div class="d-flex mt-4">
       <v-card class="d-flex flex-grow-1 flex-column mr-1" height="150px">

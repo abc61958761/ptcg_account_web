@@ -73,4 +73,10 @@
       padding-top: 0;
     }
   }
+
+  .add-item {
+    .v-input {
+      margin-top: 0;
+    }
+  }
 </style>
