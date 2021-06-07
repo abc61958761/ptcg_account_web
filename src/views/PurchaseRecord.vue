@@ -31,6 +31,9 @@
             </v-chip>
           </v-list-item-content>
           <v-list-item-content>
+            {{item.purchase.name}}
+          </v-list-item-content>
+          <v-list-item-content>
             {{ new Date(item.purchase.date).getFullYear() }} /
             {{ new Date(item.purchase.date).getMonth() + 1 }} /
             {{ new Date(item.purchase.date).getDate() }}
@@ -90,15 +93,6 @@
     data: () => {
       return {
         openItemDialog: false,
-        expanded: [],
-        dessertHeaders: [
-          { text: "刪除", value: "delete" },
-          { text: "購入者", value: "purchase.purchaser" },
-          { text: "品項名稱", value: "purchase.name" },
-          { text: "購入時間", value: "purchase.date" },
-          { text: "購入金額", value: "purchase.total_price" },
-          { text: "", value: "data-table-expand" },
-        ],
         tempDeleteItems: new Set(),
         split: "split",
         unsplit: "unsplit",

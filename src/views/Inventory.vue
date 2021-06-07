@@ -38,6 +38,7 @@
           <v-list-item-title>編輯</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
       <div style="height: 100%; overflow: auto; padding-bottom: 80px">
         <v-list-item
           v-for="item of inventories"

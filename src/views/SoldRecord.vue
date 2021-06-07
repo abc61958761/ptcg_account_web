@@ -27,6 +27,9 @@
             </v-chip>
           </v-list-item-content>
           <v-list-item-content>
+            {{ item.sold.name }}
+          </v-list-item-content>
+          <v-list-item-content>
             {{ new Date(item.sold.date).getFullYear() }} /
             {{ new Date(item.sold.date).getMonth() + 1 }} /
             {{ new Date(item.sold.date).getDate() }}
@@ -61,11 +64,17 @@
     </v-list>
 
     <div class="mb-1 d-flex">
-      <v-btn depressed color="primary"  @click="deleteItemsAction" :disabled="tempDeleteItems.size == 0"
+      <v-btn
+        depressed
+        color="primary"
+        @click="deleteItemsAction"
+        :disabled="tempDeleteItems.size == 0"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn depressed color="primary" @click="itemDialogAction">新增品項</v-btn>
+      <v-btn depressed color="primary" @click="itemDialogAction"
+        >新增品項</v-btn
+      >
     </div>
     <add-sold-item
       :openDialog="openSoldItemDialog"
