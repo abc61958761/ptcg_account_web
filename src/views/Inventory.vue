@@ -20,7 +20,10 @@
         <v-icon color="grey lighten-1">mdi-magnify</v-icon>
       </v-btn>
     </div>
-    <v-list style="height: 100%; overflow: hidden;">
+    <v-list
+      style="height: 100%; overflow: hidden;"
+      v-if="inventories.length > 0"
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title>卡片名稱</v-list-item-title>
@@ -34,7 +37,7 @@
         <v-list-item-content>
           <v-list-item-title>單張成本</v-list-item-title>
         </v-list-item-content>
-        <v-list-item-content  style="max-width:100px">
+        <v-list-item-content style="max-width:100px">
           <v-list-item-title>編輯</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -97,6 +100,10 @@
         </v-list-item>
       </div>
     </v-list>
+    <div v-else-if="inventories.length == 0 && searchPokemon">
+      查無寶可夢
+    </div>
+    <div v-else>請輸入寶可夢名稱搜尋列表</div>
     <v-btn color="primary" fab fixed bottom right @click="triggerUpload"
       ><v-icon>mdi-plus</v-icon></v-btn
     >
@@ -106,6 +113,18 @@
       ref="uploadPokemon"
       @change="uploadPokemon"
     />
+    <v-dialog v-model="loadingDialog" persistent width="300">
+      <v-card color="primary" dark>
+        <v-card-text class="mt-4">
+          寶可夢通信中 ...
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -120,6 +139,7 @@
         isSearch: false,
         searchPokemon: "",
         tempPokemons: {},
+        loadingDialog: false,
       };
     },
     computed: {
@@ -128,44 +148,59 @@
       }),
     },
     async mounted() {
-      await this.$store.dispatch("queryInventories");
+      // await this.$store.dispatch("queryInventories");
     },
     methods: {
       triggerUpload() {
         this.$refs.uploadPokemon.click();
       },
-      uploadPokemon(event) {
-        const reader = new FileReader();
-        const filename = event.target.files[0].name.split(".")[0];
-        reader.onload = async (e) => {
-          /* Parse data */
-          const bstr = e.target.result;
-          const wb = XLSX.read(bstr, { type: "binary" });
-          /* Get first worksheet */
-          const wsname = wb.SheetNames[0];
-          const ws = wb.Sheets[wsname];
-          /* Convert array of arrays */
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      async uploadPokemon(event) {
+        this.loadingDialog = true;
+        const contentBuffer = await this.readFileAsync(event);
+        await this.$store.dispatch("createPokemons", {
+          newPokemons: contentBuffer,
+          name: this.searchPokemon,
+        });
+        this.loadingDialog = false;
+      },
+      readFileAsync(event) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          const filename = event.target.files[0].name.split(".")[0];
+          reader.onload = (e) => {
+            /* Parse data */
+            const bstr = e.target.result;
+            const wb = XLSX.read(bstr, { type: "binary" });
+            /* Get first worksheet */
+            const wsname = wb.SheetNames[0];
+            const ws = wb.Sheets[wsname];
+            /* Convert array of arrays */
+            const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-          const pokemons = [];
-          for (let i = 1; i < data.length; i++) {
-            pokemons.push({
-              name: `${data[i][0]} - ${data[i][1]} - ${PokemonMapping[filename]}`,
-            });
-          }
-          await this.$store.dispatch("createPokemons", pokemons);
-        };
-        reader.readAsBinaryString(event.target.files[0]);
+            const pokemons = [];
+            for (let i = 1; i < data.length; i++) {
+              pokemons.push({
+                name: `${data[i][0]} - ${data[i][1]} - ${PokemonMapping[filename]}`,
+              });
+            }
+            resolve(pokemons);
+          };
+
+          reader.readAsBinaryString(event.target.files[0]);
+        });
       },
       async cancelSearchPokemonAction() {
         this.isSearch = false;
 
         if (this.searchPokemon) {
-          await this.$store.dispatch("queryInventories");
+          // await this.$store.dispatch("queryInventories");
+          this.inventories = [];
           this.searchPokemon = "";
         }
       },
       async queryPokemons() {
+        if (!this.searchPokemon) return;
+
         await this.$store.dispatch("queryInventories", {
           name: this.searchPokemon,
         });
@@ -184,6 +219,7 @@
         await this.$store.dispatch("updatePokemon", {
           id: pokemon.id,
           name: pokemon.name,
+          searchPokemon: this.searchPokemon,
         });
 
         delete this.tempPokemons[pokemon.id];

@@ -71,29 +71,29 @@ const account = {
     },
     async createPokemon({ dispatch }, newPokemon) {
       await accounts.createPokemon(newPokemon);
-      // await dispatch("queryPokemons");
       await dispatch("queryInventories");
     },
-    async createPokemons({ dispatch }, newPokemons) {
-      await accounts.createPokemons(newPokemons);
-      // await dispatch("queryPokemons");
-      await dispatch("queryInventories");
+    async createPokemons({ dispatch }, params) {
+      const response = await accounts.createPokemons(params.newPokemons);
+      await dispatch("queryInventories", { name: params.name });
+
+      return response;
     },
     async updatePokemon({ dispatch }, params) {
       await accounts.updatePokemon(params.id, params);
-      await dispatch("queryInventories");
+      await dispatch("queryInventories", { name: params.searchPokemon });
     },
     async createPurchaseRecord({ dispatch }, newPurchaseRecord) {
       const response = await accounts.createPurchaseRecord(newPurchaseRecord);
       await dispatch("queryPurchaseRecords");
-      await dispatch("queryInventories");
+      // await dispatch("queryInventories");
 
       return response;
     },
     async createSoldRecord({ dispatch }, newSoldRecord) {
       const response = await accounts.createSoldRecord(newSoldRecord);
       await dispatch("querySoldRecords");
-      await dispatch("queryInventories");
+      // await dispatch("queryInventories");
 
       return response;
     },
